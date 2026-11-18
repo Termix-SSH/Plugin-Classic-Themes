@@ -1,7 +1,7 @@
 {
   "name": "@termix-plugin/classic-themes",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "build": "termix-plugin build",
@@ -15,16 +15,16 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.0",
-    "@termix-ssh/plugin-sdk": "^1.0.19",
-    "@types/node": "^26.2.0",
+    "@termix-ssh/plugin-sdk": "^2.2.1",
+    "@types/node": "^26.6.6",
     "husky": "^9.1.7",
     "lint-staged": "^17.2.0",
-    "prettier": "3.9.9",
-    "typescript": "~6.0.3",
-    "vitest": "^4.1.11"
+    "prettier": "3.10.1",
+    "typescript": "~7.0.2",
+    "vitest": "^5.1.0"
   },
   "peerDependencies": {
-    "@termix-ssh/plugin-sdk": "^1.0.19"
+    "@termix-ssh/plugin-sdk": "^2.2.1"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs,json,css,md}": [
