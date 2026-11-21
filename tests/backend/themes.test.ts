@@ -33,6 +33,10 @@ describe("classic themes", () => {
       "tokyo-night",
       "one-dark",
       "gruvbox",
+      "high-contrast-dark",
+      "high-contrast-light",
+      "colorblind-dark",
+      "colorblind-light",
     ]);
   });
 
@@ -48,4 +52,60 @@ describe("classic themes", () => {
     const key = theme.label.replace(/^theme\./, "");
     expect(typeof locale.theme[key]).toBe("string");
   });
+});
+
+function tokens(id: string): Record<string, string> {
+  const css = fs.readFileSync(path.join(root, `themes/${id}.css`), "utf8");
+  return Object.fromEntries(
+    [...css.matchAll(/(--[\w-]+):\s*([^;]+);/g)].map((m) => [m[1], m[2]]),
+  );
+}
+
+function luminance(hex: string): number {
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function contrast(a: string, b: string): number {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+describe("accessible themes", () => {
+  it.each(["high-contrast-dark", "high-contrast-light"])(
+    "%s meets WCAG AAA for text and 3:1 for borders",
+    (id) => {
+      const t = tokens(id);
+      for (const fg of ["--foreground", "--muted-foreground"]) {
+        expect(contrast(t[fg], t["--background"])).toBeGreaterThanOrEqual(7);
+      }
+      expect(contrast(t["--border"], t["--background"])).toBeGreaterThanOrEqual(
+        3,
+      );
+    },
+  );
+
+  it.each(["colorblind-dark", "colorblind-light"])(
+    "%s swaps green for blue and red for orange",
+    (id) => {
+      const t = tokens(id);
+      const hue = (hex: string) => {
+        const [r, g, b] = [1, 3, 5].map((i) =>
+          parseInt(hex.slice(i, i + 2), 16),
+        );
+        return { r, g, b };
+      };
+      const good = hue(t["--color-green-500"]);
+      const bad = hue(t["--color-red-500"]);
+      expect(good.b).toBeGreaterThan(good.g);
+      expect(bad.g).toBeGreaterThan(0x30);
+      expect(t["--destructive"]).toBe(t["--color-red-500"]);
+      expect(
+        Math.abs(luminance(t["--warning"]) - luminance(t["--destructive"])),
+      ).toBeGreaterThan(0.15);
+    },
+  );
 });

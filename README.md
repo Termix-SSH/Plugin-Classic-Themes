@@ -4,7 +4,7 @@
 
 <h1>Classic Themes</h1>
 
-<p>Light, dark and seven more color themes for Termix</p>
+<p>Light, dark, high contrast, color blind and seven more color themes for Termix</p>
 
 <!-- VIDEO:START -->
 
@@ -27,6 +27,7 @@ Read the [docs](https://docs.termix.site/plugins/classic-themes) to learn how it
 ## Features
 
 - Light and dark themes
+- High contrast and color blind friendly themes
 - Dracula, Catppuccin, Nord, Solarized, Tokyo Night, One Dark and Gruvbox
 - CSS only, no code runs
 
